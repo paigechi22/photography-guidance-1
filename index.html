@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>觀議課攝影檢核表</title>
+<style>
+:root{--bg:#f2f5f2;--card:#fff;--ink:#1b2a25;--mute:#5d6e67;--line:#d9e2dd;--green:#1f4d3f;--chalk:#f2c94c;--chalk-ink:#3d3000;--ok:#2e7d5b;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121a17;--card:#1b2622;--ink:#e8efeb;--mute:#9fb0a8;--line:#2d3b36;--green:#0f2a22;--chalk:#f2c94c;--chalk-ink:#3d3000;--ok:#58c08f}}
+:root[data-theme="dark"]{--bg:#121a17;--card:#1b2622;--ink:#e8efeb;--mute:#9fb0a8;--line:#2d3b36;--green:#0f2a22;--chalk:#f2c94c;--chalk-ink:#3d3000;--ok:#58c08f}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 "Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--green);z-index:10}
+header{background:var(--green);color:#f4f8f5;padding:20px 18px 14px;position:sticky;top:env(safe-area-inset-top,0px);z-index:9}
+h1{margin:0;font-size:22px;letter-spacing:.04em}
+.sub{margin:2px 0 10px;font-size:13px;opacity:.8}
+.bar{height:8px;background:rgba(255,255,255,.2);border-radius:4px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--chalk);transition:width .25s}
+.cnt{font-size:13px;margin-top:6px;display:flex;justify-content:space-between}
+main{max-width:640px;margin:0 auto;padding:14px 14px 40px}
+section{background:var(--card);border:1px solid var(--line);border-radius:12px;margin:0 0 14px;overflow:hidden}
+section>h2{margin:0;padding:12px 14px;font-size:17px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px}
+.badge{background:var(--chalk);color:var(--chalk-ink);font-size:13px;font-weight:700;padding:1px 9px;border-radius:999px}
+.note{margin:0;padding:10px 14px 0;font-size:14px;color:var(--mute)}
+h3{margin:0;padding:12px 14px 2px;font-size:14px;color:var(--green)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) h3{color:var(--chalk)}}
+:root[data-theme="dark"] h3{color:var(--chalk)}
+ul{list-style:none;margin:0;padding:6px 0}
+li label{display:flex;gap:12px;align-items:flex-start;padding:10px 14px;cursor:pointer;min-height:48px}
+li label:active{background:var(--bg)}
+input[type=checkbox]{appearance:none;-webkit-appearance:none;flex:none;width:26px;height:26px;margin:1px 0 0;border:2px solid var(--mute);border-radius:7px;display:grid;place-content:center;background:transparent}
+input[type=checkbox]:checked{background:var(--ok);border-color:var(--ok)}
+input[type=checkbox]:checked::after{content:"";width:6px;height:12px;border:solid #fff;border-width:0 3px 3px 0;transform:rotate(45deg) translate(-1px,-1px)}
+input[type=checkbox]:focus-visible{outline:3px solid var(--chalk);outline-offset:2px}
+li label span{flex:1}
+li label small{display:block;color:var(--mute);font-size:13px;line-height:1.45}
+input:checked+span{color:var(--mute);text-decoration:line-through;text-decoration-color:var(--line)}
+.lens{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;padding:12px 14px 4px}
+.lens div{border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:13px;color:var(--mute)}
+.lens b{display:block;color:var(--ink);font-size:15px}
+.reset{display:block;margin:6px auto 0;background:none;border:1px solid var(--mute);color:var(--mute);border-radius:8px;padding:10px 18px;font:inherit;font-size:14px}
+</style>
+</head>
+<body>
+<header>
+  <h1>觀議課攝影檢核表</h1>
+  <p class="sub">邊拍邊勾，手機可直接點選</p>
+  <div class="bar"><i id="fill"></i></div>
+  <div class="cnt"><span id="num">0 / 0</span><span id="pct">0%</span></div>
+</header>
+<main id="root"></main>
+<script>
+var DATA=[
+{t:"開拍前",n:"先把設定做好，現場就不用手忙腳亂。",g:[{i:[
+ ["開啟手機或相機的九宮格線","拍黑板、牆角時用來對齊水平"],
+ ["記住三個環節的時間","說課前 10 分鐘 → 觀課中間 50 分鐘 → 議課最後 10 分鐘"],
+ ["記住四類必拍照片","課堂概覽、教師教學、學生學習、學習成果"]]}]},
+{t:"現場禮儀",b:"全程",n:"不干擾課堂，是拍照的第一原則。",g:[{i:[
+ ["移動時壓低身姿（蹲走）"],
+ ["盡量走兩側走道"],
+ ["必須穿越講者與觀眾之間時，擋住視線不超過 3 秒"],
+ ["不為了拍照打斷教學或討論"]]}]},
+{t:"每張照片自我檢查",b:"全程",n:"按下快門前，快速看一遍。",g:[{i:[
+ ["兩段式對焦：先輕按對焦，綠色框鎖在主角臉上，再按下快門","主角＝正在發言的學生或老師"],
+ ["畫面水平，不歪斜","用九宮格線對齊黑板或牆角"],
+ ["主體突出，雜物少","桌面雜物太多就換個角度"],
+ ["拍到正面或清楚的側面","才能看見專注、疑惑、恍然大悟的學習表情"],
+ ["光線足夠，臉不要太暗","教室光線會變，必要時換位置"]]}]},
+{t:"說課",b:"前 10 分鐘",n:"重點：記錄課堂的環境與脈絡。",g:[
+ {h:"課堂概覽與環境",i:[
+  ["黑板上的課題"],
+  ["投影片、教具、講義"],
+  ["教室後方拍一張全景大畫面","呈現整體課堂氛圍"]]},
+ {h:"人物",i:[
+  ["說課老師特寫"]]}]},
+{t:"觀課",b:"中間 50 分鐘",n:"重點：真實還原教學互動與學生學習成效。",g:[
+ {h:"教師教學流動",i:[
+  ["老師在台前講課的特寫"],
+  ["老師走動、彎腰指導小組的側拍","呈現師生連結"]]},
+ {h:"學生學習狀態",i:[
+  ["學生專注聆聽的表情"],
+  ["舉手發言的瞬間"],
+  ["小組圍圈熱烈討論的動態"],
+  ["學生上台發表或操作的過程"]]},
+ {h:"學習成果產出",i:[
+  ["學生書寫筆記、學習單的特寫"],
+  ["小組共同完成的海報"],
+  ["實驗結果或成品"]]}]},
+{t:"議課",b:"最後 10 分鐘",n:"重點：用前景構圖與平視角度，捕捉自然互動與表情。",g:[{i:[
+  ["發言者特寫（平視角度）"],
+  ["討論現場全景，帶一點前景"],
+  ["與會者的自然互動與表情","活動花絮"]]}]},
+{t:"鏡位自我檢核",n:"每個環節都試著把四種鏡位拍齊。",lens:1,g:[{i:[
+  ["遠景（廣角）","整間教室配置、老師與全班的相對位置"],
+  ["中景","小組討論、師生互動的半身畫面"],
+  ["近景","主角的表情與動作"],
+  ["特寫","學生筆記、實驗操作的手部、教具細節"]]}]}
+];
+var KEY="photo-checklist-v1",saved={};
+try{saved=JSON.parse(localStorage.getItem(KEY)||"{}")}catch(e){}
+var root=document.getElementById("root"),n=0;
+DATA.forEach(function(s,si){
+  var sec=document.createElement("section");
+  var h=document.createElement("h2");h.textContent=s.t;
+  if(s.b){var b=document.createElement("span");b.className="badge";b.textContent=s.b;h.appendChild(b)}
+  sec.appendChild(h);
+  if(s.n){var p=document.createElement("p");p.className="note";p.textContent=s.n;sec.appendChild(p)}
+  if(s.lens){var l=document.createElement("div");l.className="lens";
+    [["遠","全教室"],["中","半身互動"],["近","表情動作"],["特寫","細節"]].forEach(function(x){var d=document.createElement("div");d.innerHTML="<b>"+x[0]+"</b>"+x[1];l.appendChild(d)});
+    sec.appendChild(l)}
+  s.g.forEach(function(g,gi){
+    if(g.h){var t=document.createElement("h3");t.textContent=g.h;sec.appendChild(t)}
+    var ul=document.createElement("ul");
+    g.i.forEach(function(it,ii){
+      var id=si+"-"+gi+"-"+ii,li=document.createElement("li"),lb=document.createElement("label"),cb=document.createElement("input");
+      cb.type="checkbox";cb.dataset.id=id;cb.checked=!!saved[id];
+      cb.addEventListener("change",function(){saved[id]=cb.checked;save();update()});
+      var sp=document.createElement("span");sp.textContent=it[0];
+      if(it[1]){var sm=document.createElement("small");sm.textContent=it[1];sp.appendChild(sm)}
+      lb.appendChild(cb);lb.appendChild(sp);li.appendChild(lb);ul.appendChild(li);n++;
+    });
+    sec.appendChild(ul);
+  });
+  root.appendChild(sec);
+});
+var rb=document.createElement("button");rb.className="reset";rb.textContent="全部清除，重新開始";
+rb.addEventListener("click",function(){saved={};save();document.querySelectorAll("input").forEach(function(c){c.checked=false});update()});
+root.appendChild(rb);
+function save(){try{localStorage.setItem(KEY,JSON.stringify(saved))}catch(e){}}
+function update(){var c=document.querySelectorAll("input:checked").length,p=n?Math.round(c/n*100):0;
+  document.getElementById("fill").style.width=p+"%";
+  document.getElementById("num").textContent=c+" / "+n;
+  document.getElementById("pct").textContent=p+"%"}
+update();
+</script>
+</body>
+</html>
